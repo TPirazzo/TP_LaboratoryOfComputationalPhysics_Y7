@@ -13,15 +13,19 @@ threshold=$(bc <<< "scale=2; 100*sqrt(3)/2")
 less=0
 greater=0
 
-while read x y z; do
+while read line; do
+  x=$(echo "$line" | cut -d ' ' -f1)
+  y=$(echo "$line" | cut -d ' ' -f2)
+  z=$(echo "$line" | cut -d ' ' -f3)
   d=$(bc <<< "scale=2; sqrt($x*$x + $y*$y + $z*$z)")
-  #if (( $(bc <<< "$d <= $threshold") )); then
-  #  ((less++))
-  #else
-  #  ((greater++))
-  #fi
-  echo "$d"
-done < data.txt
 
-echo "$less"
-echo "$greater"
+  if (( $(bc <<< "$d <= $threshold") )); then
+    ((less++))
+  else
+    ((greater++))
+  fi
+
+done < "data.txt"
+
+echo "The number of points under the threshold distance are: $less"
+echo "The number of points under the threshold distance are: $greater"
